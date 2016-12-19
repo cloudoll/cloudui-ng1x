@@ -8,12 +8,12 @@
 //     function (angular) {
 
 
-var user = angular.module('app.user', []);
+var user = angular.module('app.admin', []);
 
 user.config(['$stateProvider', function ($stateProvider) {
     $stateProvider
         .state('main.userList', {
-            url: '/user/user_list',
+            url: '/admin/user_list',
             views: {
                 'mainContent': {
                     //templateUrl: 'controller/user/user_list.ejs',
@@ -23,18 +23,35 @@ user.config(['$stateProvider', function ($stateProvider) {
             }
         })
         .state('main.roleList', {
-            url: '/user/role_list',
+            url: '/admin/role_list',
             views: {
                 'mainContent': {
-                    //templateUrl: 'controller/user/user_list.ejs',
                     template: require('./role_list.ejs'),
                     controller: 'RoleListCtrl'
                 }
             }
         })
+        .state('main.serviceList', {
+            url: '/admin/service_list',
+            views: {
+                'mainContent': {
+                    template: require('./service_list.ejs'),
+                    controller: 'ServiceListCtrl'
+                }
+            }
+        })
+        .state('main.rightList', {
+            url: '/admin/right_list',
+            views: {
+                'mainContent': {
+                    template: require('./right_list.ejs'),
+                    controller: 'RightListCtrl'
+                }
+            }
+        })
 }]);
 
-user.service('UserSrv', ['$rootScope', '$data', function ($rootScope, $data) {
+user.service('AdminSrv', ['$rootScope', '$data', function ($rootScope, $data) {
     return {
         getUserList: function (data) {
             // var url = "open/user/list";
@@ -64,6 +81,18 @@ user.service('UserSrv', ['$rootScope', '$data', function ($rootScope, $data) {
                 data.id = obj.id;
             }
             return $data.postCloudeer("cloudarling", "/admin/role/save", data);
+        },
+        getServiceList:function () {
+            var data = data || {};
+            return $data.getCloudeer("cloudarling", "/admin/right/list-service", data);
+        },
+        syncService:function () {
+            var data = data || {};
+            return $data.getCloudeer("cloudarling", "/admin/right/sync-from-cloudeer", data);
+        },
+        getRightList:function (data) {
+            var data = data || {};
+            return $data.getCloudeer("cloudarling", "/admin/right/list-rights", data);
         }
     };
 }]);

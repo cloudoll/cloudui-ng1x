@@ -54,8 +54,9 @@ app.run([
                 });
         };
         
-        $rootScope.toast = function (msg) {
-            toasty(msg);
+        $rootScope.toast = function (msg,type) {
+            var type = type || "info";
+            toasty(msg,type);
         };
 
         $rootScope.setUserInfo = function (data) {

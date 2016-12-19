@@ -17,7 +17,7 @@
 
 require('./common/main');
 require('./controller/account/main');
-require('./controller/user/main');
+require('./controller/admin/main');
 
 var app = angular.module('app',
         [
@@ -28,7 +28,7 @@ var app = angular.module('app',
             'ngCookies',
             'app.common',
             'app.account',
-            'app.user'
+            'app.admin'
         ]
     );
 

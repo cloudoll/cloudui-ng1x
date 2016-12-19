@@ -6,7 +6,7 @@ var appConfig = {
     },
     homeview: {
         name: "main.userList",
-        url: "/user/user_list"
+        url: "/admin/user_list"
     },
     loginview:{
         name:"login",

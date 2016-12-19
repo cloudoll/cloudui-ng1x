@@ -31,7 +31,7 @@ app.config([
         toastyConfigProvider.setConfig({
             sound: false,
             shake: false,
-            position:'top-center' //{string:bottom-right,bottom-left,top-right,top-left,top-center,bottom-center}
+            position:'top-right' //{string:bottom-right,bottom-left,top-right,top-left,top-center,bottom-center}
         });
 
         $httpProvider.interceptors.push('app.httpInterceptor');
