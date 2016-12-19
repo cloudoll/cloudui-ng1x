@@ -16,13 +16,13 @@ cloud-ui
 开发模式
 
 ```
-    npm run start-dev
+    npm run start
 ```
 
 模拟正式环境
 
 ```
-    npm run start-release
+    npm run release
 ```
 
 发布

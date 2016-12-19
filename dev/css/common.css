@@ -1,0 +1,12 @@
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+    padding: 0!important;
+}
+
+.ngdialog.ngdialog-theme-default.editform_dialog .ngdialog-content {
+    width: 550px;
+}
+
+
+.sweet-alert  > p {
+    padding-bottom: 15px;
+}
