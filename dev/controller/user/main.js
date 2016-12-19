@@ -4,3 +4,4 @@
 
 require('./user.module');
 require('./user_list');
+require('./role_list');

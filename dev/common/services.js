@@ -70,7 +70,7 @@ common.factory('$data', ['$http','$rootScope', function ($http,$rootScope) {
         },
         postCloudeer: function (service, url, params) {
             var ticket = $rootScope.ticket || "";
-            params.ticket = ticket;
+            url = url+"?ticket=" + encodeURI(ticket);
             return this.post('/cloudeer/post', {
                 service: service,
                 url: url,
