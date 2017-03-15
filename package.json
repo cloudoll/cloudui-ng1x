@@ -17,6 +17,7 @@
   "author": "Zhan Xiaoping <zhanxp@me.com>",
   "license": "ISC",
   "devDependencies": {
+    "add-asset-html-webpack-plugin": "^1.0.2",
     "angular-webpack-plugin": "0.0.3",
     "babel-core": "^6.1.21",
     "babel-loader": "^6.1.0",
@@ -64,6 +65,7 @@
   },
   "dependencies": {
     "cloudoll": "^0.2.11",
+    "common-tools": "0.0.9",
     "koa-static": "^2.0.0",
     "lodash": "^3.10.1"
   }

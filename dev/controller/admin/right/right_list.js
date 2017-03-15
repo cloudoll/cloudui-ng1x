@@ -1,13 +1,9 @@
-// define(
-//     [
-//         'angular',
-//         "controller/user/user.module"
-//     ],
-//     function (angular) {
+/**
+ * Created by Peter on 2016/12/19.
+ */
 
-var user = require('./admin.module');
-//var user_edit_template = require('./user_edit.ejs');
-user.controller('UserListCtrl', [
+var user = require('../admin.module');
+user.controller('RightListCtrl', [
     '$scope',
     '$rootScope',
     '$state',
@@ -26,20 +22,28 @@ user.controller('UserListCtrl', [
         $scope.pagelist = {};
         $scope.formdata = {};
         $scope.loadData = function () {
-            AdminSrv.getUserList().then(function (res) {
-                if(res.data.success){
+            AdminSrv.getRightList().success(function (res) {
+                if(res.success){
                     $scope.pagelist = res.data;
                 }
-            }, function (error) {
+            }).error(function (error) {
 
+            }).finally(function () {
+                //$ionicLoading.hide();
             });
         };
 
         $scope.fnShowFrom = function (item) {
-            $scope.formdata = angular.copy(item);
+            if(item!==undefined){
+                $scope.formdata = angular.copy(item);
+                $scope.formdata.formTilte = "修改权限";
+            }else{
+                $scope.formdata = {};
+                $scope.formdata.formTilte = "添加权限";
+            }
             //var template =  'controller/user/user_edit.ejs';// require('./user_edit.ejs');
             $scope.dialog = ngDialog.open({
-                template: require('./user_edit.ejs'),
+                template: require('./right_edit.html'),
                 plain:true,
                 className: 'ngdialog-theme-default editform_dialog',
                 scope: $scope
@@ -49,13 +53,6 @@ user.controller('UserListCtrl', [
 
         $scope.fnDelete = function (item) {
 
-            // toasty.success({
-            //     title: 'User added!',
-            //     msg: user.firstName + ' has been added!'
-            // });
-            // return;
-
-            //SweetAlert.success("You have successfully completed our poll!", {title: "Good job!"});
             SweetAlert.confirm("确定要删除吗?",
                 {
                     title: "提示",
@@ -79,18 +76,25 @@ user.controller('UserListCtrl', [
         };
 
         $scope.saveData = function () {
-            AdminSrv.saveUserData($scope.formdata).then(function (res) {
-                if(res.data.success){
+            AdminSrv.saveRoleData($scope.formdata).then(function (res) {
+                if(res.success){
                     $scope.fnHideForm();
                     $scope.loadData();
                 }
             },function (error) {
-                
+
             });
         };
-        
+
+        $scope.fnSyncData = function () {
+            AdminSrv.syncService().then(function (res) {
+                if(res.success) {
+                    $scope.loadData();
+                }
+            },function (error) {
+
+            });
+        };
+
         $scope.loadData();
-
     }]);
-
-// });

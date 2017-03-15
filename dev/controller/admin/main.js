@@ -3,7 +3,7 @@
  */
 
 require('./admin.module');
-require('./user_list');
-require('./role_list');
-require('./service_list');
-require('./right_list');
+require('./user/user_list');
+require('./role/role_list');
+require('./service/service_list');
+require('./right/right_list');

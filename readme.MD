@@ -7,8 +7,15 @@ cloud-ui
 
 
 ```
-    npm install
+    npm install  
+    npm install -g nodemon  
 ```
+
+
+ 预编译lib
+
+ $ NODE_ENV=development webpack --config  webpack.dll.config.js --progress  
+ $ NODE_ENV=production webpack --config  webpack.dll.config.js --progress  
 
 
 ## 启动
@@ -16,7 +23,7 @@ cloud-ui
 开发模式
 
 ```
-    npm run start
+    nodemon or npm run start
 ```
 
 模拟正式环境

@@ -5,7 +5,7 @@
 //     ],
 //     function (angular) {
 
-var user = require('./admin.module');
+var user = require('../admin.module');
 //var user_edit_template = require('./user_edit.ejs');
 user.controller('UserListCtrl', [
     '$scope',
@@ -27,10 +27,10 @@ user.controller('UserListCtrl', [
         $scope.formdata = {};
         $scope.loadData = function () {
             AdminSrv.getUserList().then(function (res) {
-                if(res.data.success){
+                if(res.success){
                     $scope.pagelist = res.data;
                 }
-            }, function (error) {
+            },function (error) {
 
             });
         };
@@ -39,7 +39,7 @@ user.controller('UserListCtrl', [
             $scope.formdata = angular.copy(item);
             //var template =  'controller/user/user_edit.ejs';// require('./user_edit.ejs');
             $scope.dialog = ngDialog.open({
-                template: require('./user_edit.ejs'),
+                template: require('./user_edit.html'),
                 plain:true,
                 className: 'ngdialog-theme-default editform_dialog',
                 scope: $scope

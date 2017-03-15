@@ -21,7 +21,8 @@ app.factory('app.httpInterceptor', [
                 if (response.status == 200) {
                     if (typeof(response.data) == "object") {
                         var data = response.data;
-                        if(data.errno!==undefined){
+                        console.log(data);
+                        if(data.errno){
                             data.success = false;
                             data.msg = data.errText;
                             $rootScope.toast(data.errText,'warning');
@@ -34,7 +35,7 @@ app.factory('app.httpInterceptor', [
                         //     $rootScope.$emit("app.httpInterceptor", "notLogin", data);
                         // }
 
-                        response.data = data;
+                        response = data;
                     }
                 } else {
                     //$log.info(response);

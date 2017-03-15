@@ -20,6 +20,9 @@ require.config({
     urlArgs: "bust=" + (new Date()).getTime()  //防止读取缓存，调试用  
 });
 
+//require('vender');
+//require('angular');
+
 require("css/common.css");
 require('./app');
 require('./app.config');

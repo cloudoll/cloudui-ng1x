@@ -17,7 +17,7 @@ user.config(['$stateProvider', function ($stateProvider) {
             views: {
                 'mainContent': {
                     //templateUrl: 'controller/user/user_list.ejs',
-                    template: require('./user_list.ejs'),
+                    template: require('./user/user_list.html'),
                     controller: 'UserListCtrl'
                 }
             }
@@ -26,7 +26,7 @@ user.config(['$stateProvider', function ($stateProvider) {
             url: '/admin/role_list',
             views: {
                 'mainContent': {
-                    template: require('./role_list.ejs'),
+                    template: require('./role/role_list.html'),
                     controller: 'RoleListCtrl'
                 }
             }
@@ -35,7 +35,7 @@ user.config(['$stateProvider', function ($stateProvider) {
             url: '/admin/service_list',
             views: {
                 'mainContent': {
-                    template: require('./service_list.ejs'),
+                    template: require('./service/service_list.html'),
                     controller: 'ServiceListCtrl'
                 }
             }
@@ -44,7 +44,7 @@ user.config(['$stateProvider', function ($stateProvider) {
             url: '/admin/right_list',
             views: {
                 'mainContent': {
-                    template: require('./right_list.ejs'),
+                    template: require('./right/right_list.html'),
                     controller: 'RightListCtrl'
                 }
             }
@@ -58,7 +58,7 @@ user.service('AdminSrv', ['$rootScope', '$data', function ($rootScope, $data) {
             // var data = {};
             // return $data.get(url, data);
             var data = data || {};
-            return $data.getCloudeer("cloudarling", "/admin/account/list", data);
+            return $data.get("/admin/account/list", data);
         },
         saveUserData: function (obj) {
             var data = {
@@ -67,11 +67,11 @@ user.service('AdminSrv', ['$rootScope', '$data', function ($rootScope, $data) {
                 nick: obj.nick,
                 id: obj.id
             };
-            return $data.postCloudeer("cloudarling", "/admin/account/save", data);
+            return $data.post("/admin/account/save", data);
         },
         getRoleList: function (data) {
             var data = data || {};
-            return $data.getCloudeer("cloudarling", "/admin/role/list", data);
+            return $data.get("/admin/role/list", data);
         },
         saveRoleData: function (obj) {
             var data = {
@@ -80,19 +80,19 @@ user.service('AdminSrv', ['$rootScope', '$data', function ($rootScope, $data) {
             if(obj.id !== undefined){
                 data.id = obj.id;
             }
-            return $data.postCloudeer("cloudarling", "/admin/role/save", data);
+            return $data.post("/admin/role/save", data);
         },
         getServiceList:function () {
             var data = data || {};
-            return $data.getCloudeer("cloudarling", "/admin/right/list-service", data);
+            return $data.get("/admin/right/list-service", data);
         },
         syncService:function () {
             var data = data || {};
-            return $data.getCloudeer("cloudarling", "/admin/right/sync-from-cloudeer", data);
+            return $data.get("/admin/right/sync-from-cloudeer", data);
         },
         getRightList:function (data) {
             var data = data || {};
-            return $data.getCloudeer("cloudarling", "/admin/right/list-rights", data);
+            return $data.get( "/admin/right/list-rights", data);
         }
     };
 }]);

@@ -40,7 +40,7 @@ app.config([
 
         $stateProvider.state('main', {
             abstract: true,
-            template: require('controller/main/mainMenu.ejs'),
+            template: require('controller/main/mainMenu.html'),
             controller: 'MainMenuCtrl'
         });
         

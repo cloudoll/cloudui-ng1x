@@ -9,6 +9,7 @@ var glob = require('glob');
 
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 
 var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
@@ -17,38 +18,53 @@ var AngularWebpackPlugin = require('angular-webpack-plugin');
 
 var srcDir = path.resolve(process.cwd(), 'dev');
 var assets = path.resolve(process.cwd(), 'dist');
+//var libPath = path.resolve(process.cwd(), 'lib/manifest.json');  //isDebug ? '../dll/lib/manifest.json' : '../dll/dist/lib/manifest.json';
+
 var node_modules_dir = path.resolve(__dirname, './node_modules');
 //var aliasMap = require('./dev/aliasMap.json');
 
 var bower_components_dir = path.join(__dirname, 'bower_components');
 
 var aliasMap = {
-    'jquery': 'jquery/dist/jquery.js',
-    'angular': 'angular/angular.js',
-    'angular-ui-router':'angular-ui-router/release/angular-ui-router.min.js',
-    'ng-dialog': 'ng-dialog/js/ngDialog.min.js',
-    'angular-cookies':'angular-cookies/angular-cookies.min.js',
     'ng-dialog-css': 'ng-dialog/css/ngDialog.min.css',
     'ng-dialog-css-theme-default': 'ng-dialog/css/ngDialog-theme-default.min.css',
     'ng-dialog-css-theme-plain': 'ng-dialog/css/ngDialog-theme-plain.min.css',
-    'angular-toasty':'angular-toasty/dist/angular-toasty.min.js',
     'angular-toasty-css':'angular-toasty/dist/angular-toasty.min.css',
-    'sweet-alert':'sweetalert/dist/sweetalert.min.js',
     'sweet-alert-css':'sweetalert/dist/sweetalert.css',
     'sweet-alert-skin':'sweetalert/themes/facebook/facebook.css',
-    'ng-sweet-alert':'ng-sweet-alert/ng-sweet-alert.js',
-    'bootstrap': 'bootstrap/dist/js/bootstrap.min.js',
     'bootstrap-css':'bootstrap/dist/css/bootstrap.min.css',
-    'moment': 'moment/min/moment.min.js',
-    'admin-lte': 'AdminLTE/dist/js/app.js',
     'admin-lte-css':'AdminLTE/dist/css/AdminLTE.min.css',
     'admin-lte-skin':'AdminLTE/dist/css/skins/skin-blue-light.min.css',
     'font-awesome': 'font-awesome/css/font-awesome.min.css',
 };
-
 for (var key in aliasMap) {
     var depPath = path.resolve(bower_components_dir,aliasMap[key]);
     aliasMap[key] = depPath;
+}
+
+var assetsMap = {
+    'jquery': 'jquery/dist/jquery.min.js',
+    'angular': 'angular/angular.min.js',
+    'angular-ui-router':'angular-ui-router/release/angular-ui-router.min.js',
+    'ng-dialog': 'ng-dialog/js/ngDialog.min.js',
+    'angular-cookies':'angular-cookies/angular-cookies.min.js',
+    'angular-toasty':'angular-toasty/dist/angular-toasty.min.js',
+    'sweet-alert':'sweetalert/dist/sweetalert.min.js',
+    'ng-sweet-alert':'ng-sweet-alert/ng-sweet-alert.js',
+    'bootstrap': 'bootstrap/dist/js/bootstrap.min.js',
+    'moment': 'moment/min/moment.min.js',
+    'admin-lte': 'AdminLTE/dist/js/app.js',
+};
+
+var assetsFiles = [];
+for (var key in assetsMap) {
+    var depPath = path.resolve(bower_components_dir,assetsMap[key]);
+    var type = "js";
+    if(depPath.indexOf(".css")>-1){
+        type = "css";
+    }
+    var item = {filepath:depPath,includeSourcemap:false,typeOfAsset:type};
+    assetsFiles.push(item);
 }
 
 function entriesMap() {
@@ -65,7 +81,10 @@ function entriesMap() {
     //
     // return map;
 
-    return {"main":path.resolve(srcDir, 'main.js')};
+    var entries = {
+        "main":path.resolve(srcDir, 'main.js')
+    };
+    return entries;
 }
 
 var entries = entriesMap();
@@ -73,7 +92,8 @@ var entries = entriesMap();
 //var chunks = Object.keys(entries);
 
 function initPlugins() {
-    var entryHtml = glob.sync(srcDir + '/*.html');
+    //var entryHtml = glob.sync(srcDir + '/*.html');
+    var entryHtml = glob.sync(srcDir + '/index.htm');
     var r = [];
 
     entryHtml.forEach(function (filePath) {
@@ -87,7 +107,7 @@ function initPlugins() {
 
         if (filename in entries) {
             conf.inject = 'body';
-            conf.chunks = ['vender', 'common', filename];
+            conf.chunks = ['common','vender', filename];
         }
 
         //if(/b|c/.test(filename)) conf.chunks.splice(2, 0, 'common-b-c')
@@ -115,7 +135,7 @@ var configWebpack =function (options) {
 
     var plugins = initPlugins();
 
-    /*
+     /*
      var plugins = () => {
      var entryHtml = glob.sync(srcDir + '/*.html')
      var r = []
@@ -147,12 +167,20 @@ var configWebpack =function (options) {
             //React: 'react',
             //ReactDOM: 'react-dom',
             //_: 'lodash', 按需引用
-            angular: 'angular',
             $: 'jquery',
             jQuery: "jquery",
             "window.jQuery": "jquery",
+            //angular: 'angular',
             //Promise: 'imports?this=>global!exports?global.Promise!es6-promise'
-        })
+        }),
+        // new webpack.DllReferencePlugin({
+        //     context: __dirname,
+        //     manifest: require(libPath),
+        // }),
+        new AddAssetHtmlPlugin(assetsFiles)
+            // [
+            // { filepath: require.resolve('./lib/vender.js') }
+            // ])
     );
 
     // //angular
@@ -211,15 +239,22 @@ var configWebpack =function (options) {
         //     // 用到什么公共lib（例如React.js），就把它加进vender去，目的是将公用库单独提取打包
         //     //'vender': venders
         // }),
-
+        //devtool: '#source-map',
         output: {
             path: assets,
             filename: debug ? '[name].js' : 'js/[chunkhash:8].[name].min.js',
             chunkFilename: debug ? '[chunkhash:8].chunk.js' : 'js/[chunkhash:8].chunk.min.js',
             hotUpdateChunkFilename: debug ? '[id].js' : 'js/[id].[chunkhash:8].min.js',
             publicPath: publicPath,
-            //libraryTarget:"var"
+            //library: '[name]',
+            //libraryTarget: 'umd',
+            //umdNamedDefine: true
         },
+
+        // externals: [
+        //     //第一种写法
+        //     {"lib/vender.js": 'vender'}
+        // ],
 
         // externals:{
         //     "angular":"angular",
@@ -265,8 +300,9 @@ var configWebpack =function (options) {
                 {test: /angular.js$/, loader: "expose?angular!exports?window.angular" },
                 {test: /angular-[^\.]+.js$/, loader: "imports?angular" },
                 //{test: /\.(woff|svg|ttf|eot)([\?]?.*)$/, loader: "file-loader?name=[name].[ext]"},
-                {test: /\.(tpl|ejs)$/, loader: 'html'}, //loader:'ejs'
-                //{test: /\.html$/, loader: 'html'},
+                {test: /\.(tpl|ejs|html)$/, loader: 'html'},
+                //{test: /\.html$/, loader: 'html'},//loader:'ejs'
+                //{test: /\.(html)$/, loader: 'ngtemplate?relativeTo=' + __dirname + '/!html' },
                 {test: /\.css$/, loader: cssLoader},
                 {test: /\.scss$/, loader: sassLoader},
                 {test: /\.jsx?$/, loader: 'babel?presets[]=react,presets[]=es2015'},
@@ -307,7 +343,7 @@ var configWebpack =function (options) {
         }
     }
 
-
+    //config.entry = entries;
     config.entry =  Object.assign(entries,{"vender":Object.keys(aliasMap)});
 
     if (debug) {
@@ -330,7 +366,7 @@ var configWebpack =function (options) {
             }
             config.entry[key].push('webpack-hot-middleware/client?reload=true');
         }
-
+        //console.log(config.entry);
         config.plugins.push(new webpack.HotModuleReplacementPlugin());
         config.plugins.push(new webpack.NoErrorsPlugin());
     }

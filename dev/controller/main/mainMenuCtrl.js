@@ -28,10 +28,9 @@ app.controller('MainMenuCtrl', [
             AccountSrv.loadUserInfo().then(
                 function (res) {
                     $scope.userinfo = res.data;
-                }, function (error) {
+                },function (error) {
 
-                }
-            );
+                });
         };
 
         $scope.logout = function () {

@@ -1,6 +1,7 @@
 'use strict';
 
 var cloudoll = require('cloudoll');
+const config = require('./config');
 var serve    = require('koa-static');
 
 
@@ -11,7 +12,6 @@ var blockFavicon = function *(next) {
         return;
     }
     yield next;
-
 };
 
 
@@ -70,6 +70,15 @@ var app = new cloudoll.KoaApplication({
     middles: middles
 });
 
+//doll.orm.postgres.constr = config.postgres.conString;
+
+// var mysql = doll.orm.mysql;
+// mysql.connect(config.mysql);
+// mysql.debug = true;
+
+var mongo = cloudoll.orm.mongo;
+mongo.connect(config.mongo.dburl);
+mongo.debug = true;
 
 /*
 

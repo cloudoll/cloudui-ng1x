@@ -16,13 +16,13 @@ account.config(['$stateProvider', function ($stateProvider) {
     $stateProvider
         .state('login', {
             url: '/login',
-            template: require('./login.ejs'),
+            template: require('./login/login.html'),
             //templateUrl: 'controller/account/login.ejs',
             controller: 'LoginCtrl'
         })
         .state('register', {
             url: '/register',
-            template: require('./register.ejs'),
+            template: require('./register/register.html'),
             controller: 'RegisterCtrl'
         })
 }]);
@@ -42,10 +42,11 @@ account.service('AccountSrv', ['$rootScope', '$data', function ($rootScope, $dat
 
             // var url = "open/account/login";
             // return $data.post(url,data);
-            return $data.postCloudeer("cloudarling", "/open/account/login", data);
+            //postCloudeer
+            return $data.post( "/open/account/login", data);
         },
         loadUserInfo: function () {
-            return $data.getCloudeer("cloudarling", "/open/account/info", {});
+            return $data.get( "/open/account/info", {ticket:$rootScope.ticket});
         },
         register:function (obj) {
             var data = {
@@ -58,7 +59,7 @@ account.service('AccountSrv', ['$rootScope', '$data', function ($rootScope, $dat
                 var now = new Date() * 1;
                 data.expires_in = (now / 1000) + 60 * 60 * 24 * 14;
             }
-            return $data.postCloudeer("cloudarling", "/open/account/register", data);
+            return $data.post( "/open/account/register", data);
         }
     };
 }]);
